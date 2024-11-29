@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { main } from "../blog/route";
+import { main } from "../route";
 
 const prisma = new PrismaClient();
 
