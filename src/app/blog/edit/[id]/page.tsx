@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+
 import React, { useEffect, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -35,19 +36,26 @@ const deleteBlog = async (id: number) => {
   return res.json();
 };
 
-const EditPost = ({ params }: { params: { id: number } }) => {
+const EditPost = () => {
+  const params = useParams();
+  const id = Number(params?.id);
+
   const router = useRouter();
   const titleRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    getBlogById(id).then((data) => {
+      titleRef.current!.value = data.title;
+      descriptionRef.current!.value = data.description;
+    });
+  }, [id]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     toast.loading("編集中です・・・", { id: "1" });
-    await editBlog(
-      titleRef.current?.value,
-      descriptionRef.current?.value,
-      params.id
-    );
+    await editBlog(titleRef.current?.value, descriptionRef.current?.value, id);
     toast.success("編集に成功しました", { id: "1" });
 
     router.push("/");
@@ -55,19 +63,16 @@ const EditPost = ({ params }: { params: { id: number } }) => {
   };
 
   const handleDelete = async () => {
-    toast.loading("削除中です・・・");
-    await deleteBlog(params.id);
-
-    router.push("/");
-    router.refresh();
+    try {
+      toast.loading("削除中です・・・", { id: "2" });
+      await deleteBlog(id);
+      toast.success("削除に成功しました", { id: "2" });
+      router.push("/");
+      router.refresh();
+    } finally {
+      toast.error("削除に失敗しました", { id: "2" });
+    }
   };
-
-  useEffect(() => {
-    getBlogById(params.id).then((data) => {
-      titleRef.current!.value = data.title;
-      descriptionRef.current!.value = data.description;
-    });
-  }, [params.id]);
 
   return (
     <>

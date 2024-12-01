@@ -4,7 +4,7 @@ import { main } from "../route";
 
 const prisma = new PrismaClient();
 
-export const GET = async (req: Request, res: NextResponse) => {
+export const GET = async (req: Request, _res: NextResponse) => {
   try {
     const id: number = parseInt(req.url.split("/blog/")[1]);
     await main();
@@ -17,7 +17,7 @@ export const GET = async (req: Request, res: NextResponse) => {
   }
 };
 
-export const PUT = async (req: Request, res: NextResponse) => {
+export const PUT = async (req: Request, _res: NextResponse) => {
   try {
     const id: number = parseInt(req.url.split("/blog/")[1]);
 
@@ -35,7 +35,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
   }
 };
 
-export const DELETE = async (req: Request, res: NextResponse) => {
+export const DELETE = async (req: Request, _res: NextResponse) => {
   try {
     const id: number = parseInt(req.url.split("/blog/")[1]);
     await main();
